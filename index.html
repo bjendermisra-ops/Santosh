@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Santosh - Full Stack Developer | Premium Portfolio</title>
+    
+    <style>
+        :root {
+            --primary-color: #00f0ff;
+            --secondary-color: #7000ff;
+            --background-color: #030305;
+            --text-color: #e0e0e0;
+            --card-bg-color: rgba(20, 20, 30, 0.4);
+            --header-bg-color: rgba(3, 3, 5, 0.75);
+            --glow-color: rgba(0, 240, 255, 0.4);
+            --glow-secondary: rgba(112, 0, 255, 0.4);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* --- Custom Cursor (Only for Desktop) --- */
+        @media (min-width: 769px) {
+            * { cursor: none !important; }
+        }
+
+        .cursor { width: 8px; height: 8px; background: var(--primary-color); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 999999; transform: translate(-50%, -50%); transition: width 0.2s, height 0.2s, background 0.2s; }
+        .cursor-follower { width: 40px; height: 40px; border: 1px solid var(--primary-color); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 999998; transform: translate(-50%, -50%); transition: transform 0.1s ease-out, width 0.2s, height 0.2s, background 0.2s; }
+        .cursor.hover { width: 0; height: 0; }
+        .cursor-follower.hover { width: 60px; height: 60px; background: rgba(0, 240, 255, 0.1); border-color: var(--primary-color); backdrop-filter: blur(2px); }
+
+        .scroll-progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)); width: 0%; z-index: 10001; transition: width 0.1s ease; }
+        .bg-orb { position: fixed; border-radius: 50%; filter: blur(100px); z-index: -2; opacity: 0.5; animation: floatOrb 10s infinite alternate ease-in-out; pointer-events: none; }
+        .orb-1 { width: 400px; height: 400px; background: var(--secondary-color); top: -100px; left: -100px; }
+        .orb-2 { width: 300px; height: 300px; background: var(--primary-color); bottom: -50px; right: -50px; animation-delay: -5s; }
+        #particles-js { position: fixed; width: 100%; height: 100%; top: 0; left: 0; z-index: -1; pointer-events: none; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; position: relative; z-index: 10; }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--background-color); }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(var(--primary-color), var(--secondary-color)); border-radius: 10px; }
+        
+        header { position: fixed; width: 100%; top: 0; z-index: 10000; background-color: var(--header-bg-color); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255,255,255,0.05); padding: 1.2rem 0; transition: all 0.4s ease; }
+        nav { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 2rem; font-weight: 800; color: #fff; text-decoration: none; letter-spacing: 1px; }
+        .logo span { color: var(--primary-color); text-shadow: 0 0 10px var(--primary-color); }
+        .nav-links { list-style: none; display: flex; }
+        .nav-links li { margin-left: 3rem; }
+        .nav-links a { color: #aaa; text-decoration: none; font-weight: 500; letter-spacing: 0.5px; transition: color 0.3s ease; position: relative; pointer-events: auto; }
+        .nav-links a::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -8px; left: 50%; transform: translateX(-50%); background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)); transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); border-radius: 2px; box-shadow: 0 0 10px var(--primary-color); }
+        .nav-links a:hover, .nav-links a.active { color: #fff; }
+        .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+
+        #hero { min-height: 100vh; display: flex; align-items: center; justify-content: space-between; padding-top: 80px; }
+        .hero-content { max-width: 650px; animation: slideInFromLeft 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards; opacity: 0; transform: translateX(-50px); position: relative; z-index: 20; }
+        .hero-greeting { color: var(--primary-color); font-size: 1.2rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; display: block; }
+        .hero-content h1 { font-size: 4.5rem; margin-bottom: 1rem; color: #fff; line-height: 1.1; font-weight: 800; }
+        .hero-content h1 .name { background: linear-gradient(to right, #00f0ff, #7000ff, #00f0ff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: gradientText 3s linear infinite; }
+        .hero-content p { font-size: 1.2rem; margin-bottom: 2.5rem; color: #bbb; max-width: 90%; }
+        .typewriter { font-weight: 700; color: #fff; border-right: .15em solid var(--primary-color); animation: blink-caret .75s step-end infinite; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
+        
+        .hero-photo-container { position: relative; animation: fadeInFromRight 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards; opacity: 0; transform: translateX(50px); z-index: 10; }
+        .hero-photo-container::before { content: ''; position: absolute; top: -15px; left: -15px; right: 15px; bottom: 15px; border: 2px solid var(--secondary-color); border-radius: 50%; z-index: -1; transition: all 0.5s ease; }
+        .hero-photo-container:hover::before { top: -25px; left: -25px; right: 25px; bottom: 25px; opacity: 0.5; }
+        .hero-photo { width: 380px; height: 380px; border-radius: 50%; object-fit: cover; border: 4px solid rgba(0, 240, 255, 0.5); box-shadow: 0 0 40px rgba(0, 240, 255, 0.2), inset 0 0 20px rgba(0,0,0,0.5); transition: transform 0.5s ease; }
+
+        .magnetic-btn-wrap { display: inline-block; padding: 20px; margin: -20px; position: relative; z-index: 50; }
+        .cta-button { display: inline-flex; align-items: center; justify-content: center; background: rgba(0, 240, 255, 0.05); border: 1px solid rgba(0, 240, 255, 0.5); color: #fff; padding: 15px 35px; border-radius: 30px; text-decoration: none; font-weight: 600; letter-spacing: 1px; position: relative; overflow: hidden; backdrop-filter: blur(5px); transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); z-index: 50; pointer-events: auto !important; }
+        .cta-button::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)); z-index: -1; transform: scaleX(0); transform-origin: left; transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); }
+        .cta-button:hover { border-color: transparent; box-shadow: 0 10px 30px var(--glow-secondary); color: #fff; }
+        .cta-button:hover::before { transform: scaleX(1); }
+        .cta-button i { margin-left: 10px; transition: transform 0.3s; pointer-events: none; }
+        .cta-button:hover i { transform: translateX(5px); }
+        .cta-btn-whatsapp { background: rgba(37, 211, 102, 0.1); border-color: #25D366; }
+        .cta-btn-whatsapp::before { background: #25D366; }
+
+        #stats { padding: 4rem 0; background: linear-gradient(90deg, rgba(3,3,5,0) 0%, rgba(20,20,30,0.5) 50%, rgba(3,3,5,0) 100%); border-top: 1px solid rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.02); }
+        .stats-grid { display: flex; justify-content: space-around; flex-wrap: wrap; gap: 2rem; text-align: center; }
+        .stat-item h3 { font-size: 3.5rem; font-weight: 800; background: linear-gradient(to right, #fff, #aaa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stat-item h3 span { color: var(--primary-color); -webkit-text-fill-color: var(--primary-color); }
+        .stat-item p { color: var(--primary-color); font-weight: 500; letter-spacing: 2px; text-transform: uppercase; font-size: 0.9rem; margin-top: 0.5rem; }
+
+        section { padding: 8rem 0; overflow: hidden; position: relative; z-index: 5; }
+        .section-title { text-align: center; font-size: 3.5rem; margin-bottom: 4rem; position: relative; color: #fff; font-weight: 800; }
+        .section-title::after { content: ''; position: absolute; bottom: -15px; left: 50%; transform: translateX(-50%); width: 100px; height: 5px; background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)); border-radius: 5px; box-shadow: 0 0 15px var(--glow-color); }
+
+        #about p { text-align: center; max-width: 900px; margin: 0 auto; font-size: 1.25rem; color: #ccc; line-height: 1.8; background: var(--card-bg-color); padding: 3rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(10px); box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+
+        .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 2rem; }
+        .skill-item { background: linear-gradient(145deg, rgba(20, 20, 30, 0.6), rgba(10, 10, 15, 0.6)); padding: 2.5rem 1.5rem; border-radius: 15px; text-align: center; border: 1px solid rgba(255,255,255,0.05); transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); position: relative; overflow: hidden; backdrop-filter: blur(5px); transform-style: preserve-3d; }
+        .skill-item::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(0, 240, 255, 0.1) 0%, transparent 70%); opacity: 0; transition: opacity 0.4s ease; pointer-events: none; }
+        .skill-item:hover::before { opacity: 1; }
+        .skill-item:hover { transform: translateY(-10px) translateZ(20px); border-color: rgba(0, 240, 255, 0.4); box-shadow: 0 15px 30px rgba(0,0,0,0.6), 0 0 20px rgba(0, 240, 255, 0.2); }
+        .skill-item i { font-size: 3.5rem; margin-bottom: 1.5rem; color: var(--text-color); transition: all 0.4s; }
+        .skill-item:hover i { color: var(--primary-color); transform: scale(1.1) translateZ(30px); text-shadow: 0 0 20px var(--glow-color); }
+        .skill-item p { font-weight: 600; letter-spacing: 1px; transform: translateZ(20px); font-size: 0.9rem; }
+
+        .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 3rem; perspective: 1000px; }
+        .project-card { background: var(--card-bg-color); border-radius: 20px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); transform-style: preserve-3d; }
+        .project-slider-wrapper { overflow: hidden; position: relative; height: 240px; }
+        .project-slider-track { display: flex; height: 100%; transition: transform 0.5s ease-in-out; }
+        .project-image { min-width: 100%; height: 100%; object-fit: cover; filter: brightness(0.8); transition: filter 0.5s; }
+        .project-slider-wrapper::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 0%, rgba(3,3,5,1) 100%); opacity: 0.8; pointer-events: none; }
+        .project-card:hover .project-image { filter: brightness(1.1); }
+        .slider-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0, 240, 255, 0.2); color: #fff; border: 1px solid rgba(0, 240, 255, 0.5); border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; z-index: 20; backdrop-filter: blur(5px); transition: all 0.3s ease; opacity: 0; pointer-events: auto !important; }
+        .project-card:hover .slider-btn { opacity: 1; }
+        .slider-btn:hover { background: var(--primary-color); color: #000; box-shadow: 0 0 15px var(--primary-color); }
+        .slider-btn.prev { left: 10px; } .slider-btn.next { right: 10px; }
+        .project-content { padding: 2rem; position: relative; transform: translateZ(30px); z-index: 10; }
+        .project-content h3 { font-size: 1.8rem; margin-bottom: 1rem; color: #fff; }
+        .project-content p { color: #aaa; margin-bottom: 1.5rem; line-height: 1.6; }
+        .project-tech { margin-bottom: 1.5rem; }
+        .project-tech span { background: rgba(0, 240, 255, 0.05); border: 1px solid rgba(0, 240, 255, 0.2); color: var(--primary-color); padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; margin: 0 8px 8px 0; display: inline-block; font-weight: 500; letter-spacing: 0.5px; }
+        
+        #contact .container { text-align: center; background: var(--card-bg-color); padding: 5rem 2rem; border-radius: 30px; border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(10px); }
+        #contact p { margin-bottom: 3rem; font-size: 1.3rem; color: #bbb; max-width: 600px; margin-left: auto; margin-right: auto; }
+        .social-links { margin-top: 3rem; display: flex; justify-content: center; flex-wrap: wrap; gap: 1.5rem; }
+        .social-links a { display: flex; align-items: center; justify-content: center; width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); color: var(--text-color); font-size: 1.8rem; transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); text-decoration: none; position: relative; z-index: 50; pointer-events: auto !important; }
+        .social-links a:hover { background: var(--primary-color); color: var(--background-color); transform: translateY(-5px) rotate(360deg); border-color: transparent; box-shadow: 0 10px 20px var(--glow-color); }
+        .instagram-link { width: 80px !important; height: 80px !important; font-size: 2.5rem !important; box-shadow: 0 0 20px rgba(220, 39, 67, 0.3); border-color: #e6683c !important; color: #e6683c !important; }
+        .instagram-link:hover { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%) !important; color: #fff !important; box-shadow: 0 15px 30px rgba(220, 39, 67, 0.6) !important; }
+        
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(15px); z-index: 1000000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.4s ease, visibility 0.4s ease; }
+        .modal-overlay.active { opacity: 1; visibility: visible; pointer-events: auto; }
+        .modal-content { background: var(--card-bg-color); border: 1px solid rgba(0, 240, 255, 0.3); border-radius: 20px; padding: 2.5rem; width: 90%; max-width: 600px; box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 30px var(--glow-secondary); transform: translateY(50px) scale(0.9); transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); position: relative; max-height: 90vh; overflow-y: auto; }
+        .modal-overlay.active .modal-content { transform: translateY(0) scale(1); }
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 2rem; color: #fff; background: transparent; border: none; transition: color 0.3s; z-index: 10; pointer-events: auto !important; }
+        .close-modal:hover { color: var(--primary-color); }
+        .form-group { margin-bottom: 1.2rem; text-align: left; position: relative; z-index: 5; }
+        .form-group label { display: block; margin-bottom: 0.5rem; color: var(--primary-color); font-weight: 600; font-size: 0.95rem; }
+        .form-control { width: 100%; padding: 12px 15px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-family: 'Poppins', sans-serif; transition: border-color 0.3s, box-shadow 0.3s; position: relative; z-index: 5; pointer-events: auto; }
+        .form-control:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 10px rgba(0, 240, 255, 0.2); }
+        .features-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .feature-label { display: flex; align-items: center; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); transition: all 0.3s; font-size: 0.85rem; position: relative; z-index: 5; pointer-events: auto; cursor: pointer; }
+        .feature-label:hover { background: rgba(0, 240, 255, 0.1); border-color: rgba(0, 240, 255, 0.3); }
+        .feature-label input { margin-right: 10px; pointer-events: auto; cursor: pointer; }
+        
+        .cost-display { background: linear-gradient(90deg, rgba(0, 240, 255, 0.1), rgba(112, 0, 255, 0.1)); border: 1px dashed var(--primary-color); padding: 15px; border-radius: 10px; text-align: center; margin: 20px 0; }
+        .cost-display h4 { color: #fff; font-size: 1.1rem; margin-bottom: 5px; }
+        .cost-display h2 { color: var(--primary-color); font-size: 2.2rem; }
+
+        footer { text-align: center; padding: 2.5rem 0; background: rgba(0,0,0,0.5); border-top: 1px solid rgba(255, 255, 255, 0.02); margin-top: 4rem; position: relative; z-index: 10; }
+        footer p { color: #666; font-weight: 500; letter-spacing: 1px; }
+        
+        .scroll-to-top { position: fixed; bottom: 2rem; right: 2rem; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: #fff; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; text-decoration: none; opacity: 0; pointer-events: none; z-index: 9999; transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: 0 10px 20px rgba(0,0,0,0.3); cursor: pointer !important; }
+        .scroll-to-top.visible { opacity: 1; pointer-events: auto !important; transform: translateY(0); }
+        .scroll-to-top.visible:hover { transform: translateY(-10px); box-shadow: 0 15px 30px var(--glow-secondary); }
+
+        @keyframes slideInFromLeft { 0% { transform: translateX(-100px); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
+        @keyframes fadeInFromRight { 0% { transform: translateX(100px); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
+        @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: var(--primary-color); } }
+        @keyframes gradientText { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
+        @keyframes floatOrb { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(50px, 50px) scale(1.1); } }
+        
+        .hidden { opacity: 0; transform: translateY(60px); transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1); }
+        .visible { opacity: 1; transform: translateY(0); }
+
+        @media (max-width: 992px) { .hero-content h1 { font-size: 3.5rem; } .hero-photo { width: 300px; height: 300px; } .features-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) { 
+            * { cursor: auto !important; } .cursor, .cursor-follower { display: none !important; } .magnetic-target { transform: none !important; } 
+            .nav-links { display: none; } #hero { flex-direction: column-reverse; text-align: center; justify-content: center; padding: 8rem 0 4rem 0; }
+            .hero-content { align-items: center; display: flex; flex-direction: column; } .hero-content h1 { font-size: 2.8rem; }
+            .hero-photo-container { margin-bottom: 3rem; } .hero-photo { width: 250px; height: 250px; } .stats-grid { flex-direction: column; gap: 3rem; }
+            #about p { padding: 2rem; font-size: 1.1rem; } .section-title { font-size: 2.8rem; }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <link rel="me" href="https://www.blogger.com/profile/10176027321186114066" />
+    <meta name='google-adsense-platform-account' content='ca-host-pub-1556223355139109'/>
+    <meta name='google-adsense-platform-domain' content='blogspot.com'/>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1663130037566399&host=ca-host-pub-1556223355139109" crossorigin="anonymous"></script>
+    <style type="text/css">@import url(//www.blogger.com/static/v1/v-css/navbar/3334278262-classic.css); div.b-mobile {display:none;} </style>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+</head>
+<body>
+    <div class="cursor"></div> <div class="cursor-follower"></div>
+    <div class="scroll-progress" id="scroll-progress"></div>
+    <div class="bg-orb orb-1"></div> <div class="bg-orb orb-2"></div>
+
+    <script type="text/javascript"> function setAttributeOnload(object, attribute, val) { if(window.addEventListener) { window.addEventListener('load', function(){ object[attribute] = val; }, false); } else { window.attachEvent('onload', function(){ object[attribute] = val; }); } } </script>
+    <div id="navbar-iframe-container"></div>
+    <script type="text/javascript" src="https://apis.google.com/js/platform.js"></script>
+    <script type="text/javascript"> gapi.load("gapi.iframes:gapi.iframes.style.bubble", function() { if (gapi.iframes && gapi.iframes.getContext) { gapi.iframes.getContext().openChild({ url: 'https://www.blogger.com/navbar/1192362539499121704?origin\x3dhttps://xttfg.blogspot.com', where: document.getElementById("navbar-iframe-container"), id: "navbar-iframe" }); } }); </script>
+    <div id="particles-js"></div>
+
+    <header>
+        <nav class="container">
+            <a href="#" class="logo magnetic-target">Santosh<span>.</span></a>
+            <ul class="nav-links">
+                <li class="magnetic-target"><a href="#hero" class="active hover-target">Home</a></li>
+                <li class="magnetic-target"><a href="#about" class="hover-target">About</a></li>
+                <li class="magnetic-target"><a href="#skills" class="hover-target">Skills</a></li>
+                <li class="magnetic-target"><a href="#projects" class="hover-target">Projects</a></li>
+                <li class="magnetic-target"><a href="#contact" class="hover-target">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="hero" class="container">
+            <div class="hero-content">
+                <span class="hero-greeting">Welcome to my universe</span>
+                <h1>Hi, I'm <span class="name">Santosh</span></h1>
+                <p>I transform complex ideas into elegant, high-performance digital realities. I am a passionate <span class="typewriter"></span></p>
+                <div class="magnetic-btn-wrap magnetic-target">
+                    <button id="view-my-projects-btn" class="cta-button hover-target" style="font-family: inherit; font-size:1rem;">View My Projects <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+            <div class="hero-photo-container magnetic-target" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-perspective="1000">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhE95wF1lALkiX1F30RXN6_MmSEYG6T2u_8Gb_lxJqYhwXF5UQftmbkbDBMKVD7h8-FmmSvPucZiIgQ_xydOyuxNF4wGLvKMMk3x1sc2rkj384dHhEckwbsZNU-7uchjiCBDJfqSRpxbvkisjXBtN6LL7GMOKlGOftpHWEgd9R1LOza3qw8vpQNxTMC87s/s3264/IMG_20250817_184243.jpg" alt="Profile Photo" class="hero-photo">
+            </div>
+        </section>
+
+        <section id="stats" class="hidden">
+            <div class="container stats-grid">
+                <div class="stat-item"><h3 class="counter" data-target="5">0<span>+</span></h3><p>Years Experience</p></div>
+                <div class="stat-item"><h3 class="counter" data-target="50">0<span>+</span></h3><p>Projects Completed</p></div>
+                <div class="stat-item"><h3 class="counter" data-target="30">0<span>+</span></h3><p>Happy Clients</p></div>
+                <div class="stat-item"><h3 class="counter" data-target="100">0<span>%</span></h3><p>Client Satisfaction</p></div>
+            </div>
+        </section>
+
+        <section id="about" class="hidden">
+            <div class="container">
+                <h2 class="section-title">About Me</h2>
+                <p>I'm a Full Stack Developer driven by a passion for building elegant and high-performance web and mobile applications. With a strong foundation in both front-end and back-end development, I excel at turning complex problems into intuitive and seamless user experiences. I thrive on challenges and am constantly exploring new technologies to push the boundaries of what's possible in the digital landscape.</p>
+            </div>
+        </section>
+
+        <section id="skills" class="hidden">
+            <div class="container">
+                <h2 class="section-title">Technical Arsenal</h2>
+                <div class="skills-grid">
+                    <div class="skill-item hover-target" data-tilt><i class="fab fa-react"></i><p>React & Next.js</p></div>
+                    <div class="skill-item hover-target" data-tilt><i class="fab fa-js-square"></i><p>TypeScript / JS</p></div>
+                    <div class="skill-item hover-target" data-tilt><i class="fab fa-css3-alt"></i><p>Tailwind CSS</p></div>
+                    <div class="skill-item hover-target" data-tilt><i class="fab fa-node-js"></i><p>Node.js & Express</p></div>
+                    <div class="skill-item hover-target" data-tilt><i class="fas fa-mobile-screen-button"></i><p>Flutter / Dart</p></div>
+                    <div class="skill-item hover-target" data-tilt><i class="fas fa-fire"></i><p>Firebase</p></div>
+                    <div class="skill-item hover-target" data-tilt><i class="fas fa-project-diagram"></i><p>Microservices</p></div>
+                    <div class="skill-item hover-target" data-tilt><i class="fas fa-database"></i><p>MongoDB / SQL</p></div>
+                    <div class="skill-item hover-target" data-tilt><i class="fab fa-docker"></i><p>Docker & K8s</p></div>
+                    <div class="skill-item hover-target" data-tilt><i class="fab fa-aws"></i><p>AWS / Cloud</p></div>
+                    <div class="skill-item hover-target" data-tilt><i class="fas fa-bolt"></i><p>GraphQL & Redis</p></div>
+                    <div class="skill-item hover-target" data-tilt><i class="fas fa-server"></i><p>CI/CD Pipelines</p></div>
+                    <div class="skill-item hover-target" data-tilt><i class="fas fa-robot"></i><p>AI / LLM Integrations</p></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="hidden">
+            <div class="container">
+                <h2 class="section-title">Elite Projects</h2>
+                <div class="projects-grid" id="dynamic-projects-grid"></div>
+            </div>
+        </section>
+
+        <section id="contact" class="hidden">
+            <div class="container" data-tilt data-tilt-max="2" data-tilt-speed="1000">
+                <h2 class="section-title">Let's Build Together</h2>
+                <p>I'm always open to discussing new projects, creative ideas or opportunities to be part of an amazing team. Customize your project needs below.</p>
+                <div class="magnetic-btn-wrap magnetic-target" style="margin-bottom:2rem;">
+                    <button id="open-modal-btn" class="cta-button hover-target" style="padding: 18px 45px; font-size: 1.1rem; background:transparent; font-family:inherit;">Say Hello <i class="fas fa-rocket"></i></button>
+                </div>
+                <div class="social-links">
+                    <div class="magnetic-btn-wrap magnetic-target">
+                        <a href="https://www.instagram.com/dev_santosh_28?igsh=dTRudXhoaWxrbHBv" target="_blank" rel="noopener noreferrer" class="hover-target instagram-link"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="modal-overlay" id="contact-modal">
+        <div class="modal-content">
+            <button class="close-modal hover-target" id="close-modal-btn">&times;</button>
+            <h2 style="color:var(--primary-color); margin-bottom: 20px; font-size:2rem;">Start a Project</h2>
+            <div class="form-group"><label>Your Name / Company</label><input type="text" id="client-name" class="form-control hover-target" placeholder="John Doe"></div>
+            <div class="form-group"><label>Email Address / WhatsApp Number</label><input type="text" id="client-contact" class="form-control hover-target" placeholder="john@example.com / +91..."></div>
+            <div class="form-group"><label>Reference Website URL (Optional)</label><input type="url" id="client-ref" class="form-control hover-target" placeholder="https://example.com"></div>
+            
+            <div class="form-group">
+                <label>Select Required Features:</label>
+                <!-- 🔥 Features directly managed by Admin Panel will load here 🔥 -->
+                <div class="features-grid" id="dynamic-features-grid"></div>
+            </div>
+
+            <div class="cost-display"><h4>Estimated Budget Setup</h4><h2 id="total-cost">$0</h2></div>
+
+            <div style="display:flex; justify-content:center; gap:15px; margin-top:20px; flex-wrap: wrap;">
+                <button class="cta-button hover-target" id="save-admin-btn" style="font-family:inherit;">Save to Admin <i class="fas fa-server"></i></button>
+                <button class="cta-button cta-btn-whatsapp hover-target" id="whatsapp-btn" style="font-family:inherit;">Chat on WhatsApp <i class="fab fa-whatsapp"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <footer><p class="container">&copy; 2025 Santosh. Engineered with precision & passion.</p></footer>
+    <a href="#" class="scroll-to-top magnetic-target hover-target"><i class="fas fa-arrow-up"></i></a>
+    
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+    
+    <script>
+        window.slideIndices = {}; window.slideIntervals = {};
+        function renderProjects(projects) {
+            const grid = document.getElementById('dynamic-projects-grid');
+            if(!grid) return;
+            grid.innerHTML = ''; 
+            Object.values(window.slideIntervals).forEach(i => clearInterval(i));
+            window.slideIndices = {}; window.slideIntervals = {};
+
+            projects.forEach(proj => {
+                let techSpans = proj.tech ? proj.tech.map(t => `<span>${t}</span>`).join('') : '';
+                let projectImages = proj.images ? proj.images : [proj.img];
+                let imagesHTML = projectImages.map(src => `<img src="${src}" class="project-image">`).join('');
+                
+                window.slideIndices[proj.id] = 0;
+                let html = `
+                    <div class="project-card visible" data-tilt data-tilt-max="5" data-tilt-speed="400">
+                        <div class="project-slider-wrapper">
+                            <div class="project-slider-track" id="slider-track-${proj.id}">${imagesHTML}</div>
+                            ${projectImages.length > 1 ? `<button class="slider-btn prev hover-target" onclick="manualMoveSlide('${proj.id}', -1, ${projectImages.length})">&#10094;</button><button class="slider-btn next hover-target" onclick="manualMoveSlide('${proj.id}', 1, ${projectImages.length})">&#10095;</button>` : ''}
+                        </div>
+                        <div class="project-content">
+                            <h3>${proj.title}</h3><p>${proj.description}</p><div class="project-tech">${techSpans}</div>
+                            <div class="magnetic-btn-wrap magnetic-target" style="z-index:50; position:relative;"><a href="${proj.link}" target="_blank" class="cta-button hover-target">Live Demo <i class="fas fa-external-link-alt"></i></a></div>
+                        </div>
+                    </div>`;
+                grid.innerHTML += html;
+                if(projectImages.length > 1) startAutoSlide(proj.id, projectImages.length);
+            });
+            if(typeof VanillaTilt !== 'undefined' && window.innerWidth > 768) VanillaTilt.init(document.querySelectorAll(".project-card"), { max: 5, speed: 400 });
+        }
+        
+        function moveSlide(id, dir, total) { window.slideIndices[id] = (window.slideIndices[id] + dir + total) % total; const t = document.getElementById(`slider-track-${id}`); if(t) t.style.transform = `translateX(-${window.slideIndices[id] * 100}%)`; }
+        function startAutoSlide(id, total) { if(window.slideIntervals[id]) clearInterval(window.slideIntervals[id]); window.slideIntervals[id] = setInterval(() => { moveSlide(id, 1, total); }, 2000); }
+        window.manualMoveSlide = function(id, dir, total) { if(window.slideIntervals[id]) clearInterval(window.slideIntervals[id]); moveSlide(id, dir, total); startAutoSlide(id, total); }
+
+        const firebaseConfig = { apiKey: "AIzaSyCNUsa84ocl5z47r3HTg-tQpAqqhYQ-UAQ", authDomain: "iskcon-slider.firebaseapp.com", databaseURL: "https://iskcon-slider-default-rtdb.firebaseio.com", projectId: "iskcon-slider", storageBucket: "iskcon-slider.firebasestorage.app", messagingSenderId: "887649015723", appId: "1:887649015723:web:2b10268044c5920da564ee" };
+        
+        try {
+            firebase.initializeApp(firebaseConfig); const database = firebase.database(); window.firebaseDB = database; 
+            
+            // DYNAMIC PROJECTS FROM ADMIN
+            database.ref('projects').on('value', (snap) => {
+                const data = snap.val();
+                if(data) { let p = []; Object.keys(data).forEach(k => p.push({ id: k, ...data[k] })); renderProjects(p); }
+            });
+
+            // DYNAMIC FEATURES & PRICING FROM ADMIN
+            let currentEstimatedCost = 0;
+            database.ref('features').on('value', (snap) => {
+                const data = snap.val();
+                const grid = document.getElementById('dynamic-features-grid');
+                if(!grid) return;
+                grid.innerHTML = '';
+                if(data) {
+                    Object.keys(data).forEach(k => {
+                        const f = data[k];
+                        grid.innerHTML += `<label class="feature-label hover-target"><input type="checkbox" class="feature-cb hover-target" value="${f.price}" ${f.defaultChecked?'checked':''}> ${f.name} (+$${f.price})</label>`;
+                    });
+                } else {
+                    grid.innerHTML = `<label class="feature-label"><input type="checkbox" class="feature-cb" value="200" checked> Premium UI/UX (+$200)</label>`;
+                }
+                
+                const cbs = document.querySelectorAll('.feature-cb');
+                function calc() { let t=0; cbs.forEach(c => { if(c.checked) t += parseInt(c.value); }); currentEstimatedCost = t; document.getElementById('total-cost').innerText = `$${t}`; }
+                cbs.forEach(c => c.addEventListener('change', calc)); calc();
+            });
+
+        } catch(err) { console.warn("Firebase offline"); }
+
+        document.getElementById('view-my-projects-btn').addEventListener('click', function(e) {
+            e.preventDefault(); const s = document.getElementById('projects');
+            if(s) window.scrollTo({ top: s.getBoundingClientRect().top + window.pageYOffset - 80, behavior: "smooth" });
+        });
+
+        const modal = document.getElementById('contact-modal');
+        document.getElementById('open-modal-btn')?.addEventListener('click', (e) => { e.preventDefault(); modal.classList.add('active'); });
+        document.getElementById('close-modal-btn')?.addEventListener('click', () => modal.classList.remove('active'));
+        modal.addEventListener('click', (e) => { if(e.target === modal) modal.classList.remove('active'); });
+
+        document.getElementById('whatsapp-btn').addEventListener('click', () => {
+            const name = document.getElementById('client-name').value || "A Client";
+            const contact = document.getElementById('client-contact').value || "Not provided";
+            const ref = document.getElementById('client-ref').value || "No reference";
+            let feats = []; document.querySelectorAll('.feature-cb:checked').forEach(c => feats.push(c.parentElement.innerText.trim()));
+            const myWhatsappNumber = "910000000000"; 
+            let msg = `Hello Santosh! I am ${name}.%0A%0AContact: ${contact}%0ARef URL: ${ref}%0AFeatures: ${feats.join(', ')}%0A%0ABudget Setup: ${document.getElementById('total-cost').innerText}%0A%0ALet's discuss!`;
+            window.open(`https://wa.me/${myWhatsappNumber}?text=${msg}`, '_blank');
+        });
+
+        document.getElementById('save-admin-btn').addEventListener('click', () => {
+            const btn = document.getElementById('save-admin-btn');
+            let feats = []; document.querySelectorAll('.feature-cb:checked').forEach(c => feats.push(c.parentElement.innerText.trim()));
+            const data = { name: document.getElementById('client-name').value || "Anon", contact_info: document.getElementById('client-contact').value || "None", reference_url: document.getElementById('client-ref').value || "None", features_requested: feats.join(', '), estimated_budget: document.getElementById('total-cost').innerText, timestamp: new Date().toISOString() };
+            if(window.firebaseDB) {
+                window.firebaseDB.ref('leads').push(data).then(() => {
+                    const og = btn.innerHTML; btn.innerHTML = 'Saved to Admin <i class="fas fa-check"></i>'; btn.style.background = '#25D366'; btn.style.borderColor = '#25D366';
+                    setTimeout(() => { btn.innerHTML = og; btn.style.background = 'transparent'; btn.style.borderColor = 'rgba(0, 240, 255, 0.5)'; modal.classList.remove('active'); }, 2000);
+                });
+            }
+        });
+
+        const cursor = document.querySelector('.cursor'); const cursorFollower = document.querySelector('.cursor-follower');
+        document.addEventListener('mousemove', (e) => {
+            if(window.innerWidth <= 768) return; cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px';
+            setTimeout(() => { cursorFollower.style.left = e.clientX + 'px'; cursorFollower.style.top = e.clientY + 'px'; }, 50);
+        });
+        document.body.addEventListener('mouseover', (e) => {
+            if(window.innerWidth <= 768) return;
+            if(e.target.classList.contains('hover-target') || e.target.closest('.hover-target')) { cursor.classList.add('hover'); cursorFollower.classList.add('hover'); } 
+            else { cursor.classList.remove('hover'); cursorFollower.classList.remove('hover'); }
+        });
+
+        document.querySelectorAll('.magnetic-target').forEach(t => {
+            t.addEventListener('mousemove', (e) => {
+                if(window.innerWidth <= 768) return;
+                const pos = t.getBoundingClientRect(); const x = (e.clientX - (pos.left + pos.width / 2)) * 0.3; const y = (e.clientY - (pos.top + pos.height / 2)) * 0.3;
+                t.style.transform = `translate(${Math.max(Math.min(x,20),-20)}px, ${Math.max(Math.min(y,20),-20)}px)`;
+            });
+            t.addEventListener('mouseout', () => { if(window.innerWidth > 768) t.style.transform = 'translate(0px, 0px)'; });
+        });
+
+        window.addEventListener('scroll', () => {
+            const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            document.getElementById("scroll-progress").style.width = ((window.scrollY || document.documentElement.scrollTop) / h) * 100 + "%";
+            document.querySelector('.scroll-to-top').classList.toggle('visible', window.scrollY > 400);
+            
+            let current = '';
+            document.querySelectorAll('section').forEach(s => { if (pageYOffset >= s.offsetTop - 200) current = s.getAttribute('id'); });
+            document.querySelectorAll('.nav-links a').forEach(l => { l.classList.remove('active'); if (l.getAttribute('href').includes(current)) l.classList.add('active'); });
+        });
+
+        if(typeof tsParticles !== "undefined") tsParticles.load("particles-js", { background: { color: { value: "transparent" } }, fpsLimit: 60, interactivity: { events: { onClick: { enable: true, mode: "push" }, onHover: { enable: true, mode: "repulse" }, resize: true }, modes: { push: { quantity: 4 }, repulse: { distance: 100, duration: 0.4 } } }, particles: { color: { value: ["#00f0ff", "#7000ff", "#ffffff"] }, links: { color: "#ffffff", distance: 150, enable: true, opacity: 0.1, width: 1 }, move: { direction: "none", enable: true, outModes: { default: "bounce" }, random: true, speed: 1.5, straight: false }, number: { density: { enable: true, area: 800 }, value: 60 }, opacity: { value: 0.4, animation: { enable: true, minimumValue: 0.1, speed: 1, sync: false } }, shape: { type: "circle" }, size: { value: { min: 1, max: 3 } } }, detectRetina: true });
+
+        const typeEl = document.querySelector('.typewriter');
+        if(typeEl) {
+            const w = ["Senior Full Stack Engineer", "Cloud & DevOps Architect", "Web3 Developer"]; let wI = 0; let cI = 0; let del = false;
+            function type() { const cW = w[wI]; typeEl.textContent = cW.substring(0, cI); if(!del && cI < cW.length) { cI++; setTimeout(type, 100); } else if(del && cI > 0) { cI--; setTimeout(type, 50); } else { del = !del; if(!del) wI = (wI + 1) % w.length; setTimeout(type, 1200); } } type();
+        }
+
+        let hasCounted = false;
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    if(entry.target.id === 'stats' && !hasCounted) {
+                        document.querySelectorAll('.counter').forEach(c => {
+                            c.innerText = '0'; const t = +c.getAttribute('data-target'); const inc = t / 50;
+                            const update = () => { const val = +c.innerText.replace(/\D/g, ''); if(val < t) { c.innerHTML = `${Math.ceil(val + inc)}<span>${c.innerHTML.includes('+')?'+':'%'}</span>`; setTimeout(update, 30); } else c.innerHTML = `${t}<span>${c.innerHTML.includes('+')?'+':'%'}</span>`; }; update();
+                        }); hasCounted = true;
+                    }
+                    entry.target.querySelectorAll('.skill-item, .project-card, .stat-item').forEach((child, index) => { setTimeout(() => child.classList.add('visible'), index * 150); });
+                }
+            });
+        }, { threshold: 0.15 });
+
+        document.querySelectorAll('.hidden').forEach((el) => { el.querySelectorAll('.skill-item, .project-card, .stat-item').forEach(child => child.classList.add('hidden')); observer.observe(el); });
+    </script>
+</body>
+</html>
